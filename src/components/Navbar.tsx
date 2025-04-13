@@ -1,42 +1,62 @@
 "use client";
-import * as React from 'react';
-import SearchBox from './SearchBox';
+
+import * as React from "react";
+import SearchBox from "./SearchBox";
 import { MdWbSunny, MdMyLocation, MdOutlineLocationOn } from "react-icons/md";
+import { useAtom } from "jotai";
+import { placeAtom } from "@/app/atom";
 
-type props = {}
+type NavbarProps = {
+  location: string | undefined;
+};
 
-export default function Navbar({}: props) {
-  const [value, setValue] = React.useState<string>('');
+export default function Navbar({ location }: NavbarProps) {
+  const setPlace = useAtom(placeAtom)[1];
+  const [value, setValue] = React.useState("");
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log("Searching for:", value);
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!value.trim()) return;
+    setPlace(value.trim());
+    setValue("");
   };
 
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
   };
-     
+
   return (
-    <nav className="shadow-sm sticky top-0 left-0 z-50 bg-white">
-      <div className='h-[80px] w-full flex justify-between items-center max-w-7xl px-3 mx-auto'>
-        <div className='flex items-center gap-2'>
-          <h2 className='text-gray-500 text-3xl'>Weather</h2>
-          <MdWbSunny className='text-3xl mt-1 text-yellow-300' />
+    <nav className="sticky top-0 left-0 z-50 backdrop-blur-md bg-white/70 shadow-sm border-b border-gray-200">
+      <div className="h-auto min-h-[80px] w-full max-w-7xl mx-auto px-4 flex flex-wrap justify-between items-center gap-4 py-2">
+        {/* Logo */}
+        <div className="flex items-center gap-2 shrink-0">
+          <h2 className="text-gray-800 text-3xl font-bold">Weather</h2>
+          <MdWbSunny className="text-3xl text-yellow-400" />
         </div>
-        <div className='flex items-center gap-4'>
-          <section className='flex gap-2 items-center'>
-            <MdMyLocation className='text-2xl text-gray-400 hover:opacity-80 cursor-pointer' />
-            <MdOutlineLocationOn className='text-3xl' />
-            <p className='text-slate-900/80 text-sm'>India</p>
-          </section>
+
+        {/* Centered Big Search Box */}
+        <div className="flex-1 flex justify-center w-full sm:w-auto order-last sm:order-none">
           <SearchBox
-            className='w-[300px] h-10'
-            placeholder='search location'
+            className="w-full max-w-2xl"
+            placeholder="Search location..."
             onChange={onChange}
             onSubmit={onSubmit}
             value={value}
           />
+        </div>
+
+        {/* Location Info */}
+        <div className="flex items-center gap-4 text-sm text-gray-700 shrink-0">
+          <button
+            title="Use current location"
+            className="p-2 rounded-full hover:bg-gray-100 transition"
+          >
+            <MdMyLocation className="text-xl" />
+          </button>
+          <MdOutlineLocationOn className="text-xl" />
+          <p className="max-w-[120px] truncate hidden sm:block">
+            {location ?? "Unknown"}
+          </p>
         </div>
       </div>
     </nav>

@@ -7,6 +7,9 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
+import { Inter } from "next/font/google";
+const inter = Inter({ subsets: ["latin"] });
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <QueryClientProvider client={queryClient}>
-        <body>{children}</body>
+      <body className={inter.className}>{children}</body>
       </QueryClientProvider>
     </html>
   );
